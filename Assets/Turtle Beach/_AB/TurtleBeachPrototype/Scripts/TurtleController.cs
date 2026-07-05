@@ -26,6 +26,22 @@ namespace AB.TurtleBeach
         public void AddTask(string name, int type, int val, object obj) { }
     }
 
+    public class ChildTriggerDelegate : MonoBehaviour
+    {
+        public System.Action<Collider> onTriggerEnter;
+        public System.Action<Collider> onTriggerExit;
+
+        private void OnTriggerEnter(Collider other)
+        {
+            onTriggerEnter?.Invoke(other);
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            onTriggerExit?.Invoke(other);
+        }
+    }
+
     public class TurtleController : MonoBehaviour
     {
         public static System.Action<TurtleController> OnReachedGoal;
@@ -37,6 +53,7 @@ namespace AB.TurtleBeach
         [SerializeField] GameObject cameraTarget;
         [SerializeField] GameObject turtleVisual;
         [SerializeField] GameObject successVFX;
+        public GameObject interactionCanvasPrefab;
 
         private bool _isControlled = false;
         private bool _isMoving = false;
@@ -78,22 +95,49 @@ namespace AB.TurtleBeach
             _startPosition = transform.position;
             _startRotation = transform.rotation;
 
-            // Ensure collider is configured as a trigger
-            Collider col = GetComponent<Collider>();
-            if (col != null)
-            {
-                col.isTrigger = true;
-            }
-
             // Setup interaction prompt canvas inside the interactable
             if (interactable != null)
             {
+                // Ensure interactable child has a trigger collider
+                var col = interactable.GetComponent<Collider>();
+                if (col == null)
+                {
+                    var sphere = interactable.AddComponent<SphereCollider>();
+                    sphere.isTrigger = true;
+                    sphere.radius = 2.0f;
+                }
+                else
+                {
+                    col.isTrigger = true;
+                }
+
+                // Attach trigger delegate to child to forward triggers to this script
+                var triggerDelegate = interactable.GetComponent<ChildTriggerDelegate>();
+                if (triggerDelegate == null)
+                {
+                    triggerDelegate = interactable.AddComponent<ChildTriggerDelegate>();
+                }
+                triggerDelegate.onTriggerEnter = OnInteractTriggerEnter;
+                triggerDelegate.onTriggerExit = OnInteractTriggerExit;
+
                 Transform canvasT = interactable.transform.Find("InteractionCanvas");
                 if (canvasT != null)
                 {
                     interactionCanvas = canvasT.gameObject;
                     interactionCanvas.SetActive(false);
-                    
+                }
+                else if (interactionCanvasPrefab != null)
+                {
+                    interactionCanvas = Instantiate(interactionCanvasPrefab, interactable.transform);
+                    interactionCanvas.name = "InteractionCanvas";
+                    interactionCanvas.transform.localPosition = new Vector3(0f, 0.4f, 0f);
+                    interactionCanvas.transform.localRotation = Quaternion.identity;
+                    interactionCanvas.transform.localScale = new Vector3(0.012f, 0.012f, 0.012f);
+                    interactionCanvas.SetActive(false);
+                }
+
+                if (interactionCanvas != null)
+                {
                     var btn = interactionCanvas.GetComponentInChildren<UnityEngine.UI.Button>();
                     if (btn != null)
                     {
@@ -109,6 +153,8 @@ namespace AB.TurtleBeach
             _animator = GetComponent<Animator>();
             _rb = GetComponent<Rigidbody>();
             _boxCollider = GetComponent<BoxCollider>();
+            if (_rb != null) _rb.isKinematic = false;
+            if (_boxCollider != null) _boxCollider.isTrigger = false; // Rigid solid body on terrain!
             if (turtleExitCanvas != null) turtleExitCanvas.SetActive(false);
         }        
 
@@ -394,8 +440,19 @@ namespace AB.TurtleBeach
                     PredatorManager.Instance.ClearCurrentTarget(this);
                 }
             } 
+        }
 
-            // Trigger for local rig to enter the turtle interaction zone
+        private void OnTriggerExit(Collider other)
+        {
+            if(other.gameObject.TryGetComponent<DriftwoodObstacle>(out var driftwoodObstacle))
+            {
+                SetIsHiding(false);
+            }
+        }
+
+        // Delegated trigger callbacks from ChildTriggerDelegate
+        private void OnInteractTriggerEnter(Collider other)
+        {
             var rig = other.GetComponentInParent<HardwareRig>();
             if (rig != null && !_isControlled)
             {
@@ -407,13 +464,8 @@ namespace AB.TurtleBeach
             }
         }
 
-        private void OnTriggerExit(Collider other)
+        private void OnInteractTriggerExit(Collider other)
         {
-            if(other.gameObject.TryGetComponent<DriftwoodObstacle>(out var driftwoodObstacle))
-            {
-                SetIsHiding(false);
-            }
-
             var rig = other.GetComponentInParent<HardwareRig>();
             if (rig != null)
             {
