@@ -1001,11 +1001,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: 419bfcab-7ae5-4185-b763-13fb581649d0
+  cloudProjectId: 91b95d82-38af-4ebd-94c6-d26d0a378ffe
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: Fusion2Metaverse
-  organizationId: 8july
+  organizationId: 6july
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

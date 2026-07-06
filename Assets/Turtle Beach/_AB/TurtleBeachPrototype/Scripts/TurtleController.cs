@@ -63,8 +63,8 @@ namespace AB.TurtleBeach
         Rigidbody _rb;
         BoxCollider _boxCollider;
         float _rotationSpeed = 10f;
-        float _moveSpeed = 4.5f;
-        float _boostedMoveSpeed = 8f;
+        float _moveSpeed = 3.0f;
+        float _boostedMoveSpeed = 6.0f;
         float _powerupCounter = 0f;
         float _powerupDuration = 3.5f;
         bool _hasPowerup = false;
@@ -304,6 +304,20 @@ namespace AB.TurtleBeach
                 _playerStartPosition = localRig.transform.position;
                 _playerStartRotation = localRig.transform.rotation;
 
+                // Disable player locomotion while riding the turtle (VR / Mobile)
+                var smoothLocomotion = localRig.GetComponent<Fusion.XR.Shared.Locomotion.SmoothLocomotion>();
+                if (smoothLocomotion != null)
+                {
+                    smoothLocomotion.enabled = false;
+                }
+
+                // Disable player locomotion while riding the turtle (Desktop / Mouse)
+                var desktopController = localRig.GetComponentInChildren<Fusion.XR.Shared.Desktop.DesktopController>();
+                if (desktopController != null)
+                {
+                    desktopController.enabled = false;
+                }
+
                 // Move and parent player rig to follow turtle's camera target beautifully
                 localRig.transform.SetParent(cameraTarget.transform);
                 localRig.transform.localPosition = Vector3.zero;
@@ -387,6 +401,20 @@ namespace AB.TurtleBeach
                 _playerRig.transform.SetParent(null);
                 _playerRig.transform.position = _playerStartPosition;
                 _playerRig.transform.rotation = _playerStartRotation;
+
+                // Re-enable player locomotion (VR / Mobile)
+                var smoothLocomotion = _playerRig.GetComponent<Fusion.XR.Shared.Locomotion.SmoothLocomotion>();
+                if (smoothLocomotion != null)
+                {
+                    smoothLocomotion.enabled = true;
+                }
+
+                // Re-enable player locomotion (Desktop / Mouse)
+                var desktopController = _playerRig.GetComponentInChildren<Fusion.XR.Shared.Desktop.DesktopController>();
+                if (desktopController != null)
+                {
+                    desktopController.enabled = true;
+                }
 
                 // Wait a few moments
                 yield return _returnControlDelay;            

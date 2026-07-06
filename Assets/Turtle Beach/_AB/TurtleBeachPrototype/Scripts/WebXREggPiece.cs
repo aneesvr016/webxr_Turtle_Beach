@@ -6,7 +6,6 @@ using Fusion.XR.Shared.Rig;
 
 namespace AB.TurtleBeach
 {
-    [RequireComponent(typeof(Collider))]
     public class WebXREggPiece : MonoBehaviour
     {
         public GameObject interactionCanvasPrefab;

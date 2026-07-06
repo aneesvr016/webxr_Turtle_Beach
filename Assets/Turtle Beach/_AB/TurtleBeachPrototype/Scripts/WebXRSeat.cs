@@ -135,6 +135,20 @@ namespace AB.TurtleBeach
                 _playerStartPosition = localRig.transform.position;
                 _playerStartRotation = localRig.transform.rotation;
 
+                // Disable player locomotion while sitting (VR / Mobile)
+                var smoothLocomotion = localRig.GetComponent<Fusion.XR.Shared.Locomotion.SmoothLocomotion>();
+                if (smoothLocomotion != null)
+                {
+                    smoothLocomotion.enabled = false;
+                }
+
+                // Disable player locomotion while sitting (Desktop / Mouse)
+                var desktopController = localRig.GetComponentInChildren<Fusion.XR.Shared.Desktop.DesktopController>();
+                if (desktopController != null)
+                {
+                    desktopController.enabled = false;
+                }
+
                 // Move and parent player rig to this seat hotspot
                 localRig.transform.SetParent(transform);
                 localRig.transform.localPosition = Vector3.zero;
@@ -156,6 +170,21 @@ namespace AB.TurtleBeach
                 _playerRig.transform.SetParent(null);
                 _playerRig.transform.position = _playerStartPosition;
                 _playerRig.transform.rotation = _playerStartRotation;
+
+                // Re-enable player locomotion (VR / Mobile)
+                var smoothLocomotion = _playerRig.GetComponent<Fusion.XR.Shared.Locomotion.SmoothLocomotion>();
+                if (smoothLocomotion != null)
+                {
+                    smoothLocomotion.enabled = true;
+                }
+
+                // Re-enable player locomotion (Desktop / Mouse)
+                var desktopController = _playerRig.GetComponentInChildren<Fusion.XR.Shared.Desktop.DesktopController>();
+                if (desktopController != null)
+                {
+                    desktopController.enabled = true;
+                }
+
                 _playerRig = null;
             }
 

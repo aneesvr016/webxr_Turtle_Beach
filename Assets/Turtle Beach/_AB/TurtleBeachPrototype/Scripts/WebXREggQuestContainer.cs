@@ -37,6 +37,7 @@ namespace AB.TurtleBeach
 
         public void InitializeEggs()
         {
+            if (eggs == null) eggs = new List<WebXREggPiece>();
             eggs.Clear();
             foreach (Transform child in transform)
             {
