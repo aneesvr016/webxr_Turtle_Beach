@@ -63,8 +63,8 @@ namespace AB.TurtleBeach
         Rigidbody _rb;
         BoxCollider _boxCollider;
         float _rotationSpeed = 10f;
-        float _moveSpeed = .6f;
-        float _boostedMoveSpeed = 1.8f;
+        float _moveSpeed = 4.5f;
+        float _boostedMoveSpeed = 8f;
         float _powerupCounter = 0f;
         float _powerupDuration = 3.5f;
         bool _hasPowerup = false;
@@ -223,19 +223,13 @@ namespace AB.TurtleBeach
                 {
                     if (turtleVisual != null && turtleVisual.activeSelf)
                     {
-                        float cameraYRotation = 0f;
-                        var mainCam = Camera.main;
-                        if (mainCam != null)
-                        {
-                            cameraYRotation = mainCam.transform.rotation.eulerAngles.y;
-                        }
+                        // Direct vehicle (tank) controls: turn left/right and move forward/backward
+                        float turn = movementVector.x * _rotationSpeed * 8f * Time.deltaTime;
+                        transform.Rotate(0f, turn, 0f);
 
-                        float targetAngle = Mathf.Atan2(movementVector.x, movementVector.y) * Mathf.Rad2Deg + cameraYRotation;
-                        Quaternion targetRotation = Quaternion.Euler(0, targetAngle, 0);
-
-                        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
-                        Vector3 moveDirection = Quaternion.Euler(0, targetAngle, 0) * Vector3.forward;
-                        transform.position += moveDirection.normalized * (_hasPowerup ? _boostedMoveSpeed : _moveSpeed) * Time.deltaTime;
+                        float currentSpeed = _hasPowerup ? _boostedMoveSpeed : _moveSpeed;
+                        Vector3 moveDirection = transform.forward * movementVector.y;
+                        transform.position += moveDirection * currentSpeed * Time.deltaTime;
                     }
                 }
 

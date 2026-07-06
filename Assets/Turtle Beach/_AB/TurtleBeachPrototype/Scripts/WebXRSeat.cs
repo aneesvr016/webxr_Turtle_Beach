@@ -47,7 +47,7 @@ namespace AB.TurtleBeach
                 interactionCanvas.name = "InteractionCanvas";
                 interactionCanvas.transform.localPosition = new Vector3(0f, 0.4f, 0f);
                 interactionCanvas.transform.localRotation = Quaternion.identity;
-                interactionCanvas.transform.localScale = new Vector3(0.008f, 0.008f, 0.008f);
+                interactionCanvas.transform.localScale = new Vector3(0.005f, 0.005f, 0.005f);
 
                 // Dynamically change text to [Sit]
                 var tmp = interactionCanvas.GetComponentInChildren<TMPro.TextMeshProUGUI>();

@@ -47,9 +47,9 @@ namespace AB.TurtleBeach
                 interactionCanvas.name = "InteractionCanvas";
                 
                 // Position above the NPC
-                interactionCanvas.transform.localPosition = new Vector3(0f, 1.35f, 0f);
+                interactionCanvas.transform.localPosition = new Vector3(0f, 1.5f, 0f);
                 interactionCanvas.transform.localRotation = Quaternion.identity;
-                interactionCanvas.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+                interactionCanvas.transform.localScale = new Vector3(0.005f, 0.005f, 0.005f);
                 
                 interactionCanvas.SetActive(false);
             }

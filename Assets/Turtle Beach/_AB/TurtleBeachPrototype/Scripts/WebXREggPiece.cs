@@ -25,8 +25,12 @@ namespace AB.TurtleBeach
         {
             container = GetComponentInParent<WebXREggQuestContainer>();
 
-            // Ensure collider is a trigger
+            // Ensure collider is a trigger (on self or children)
             Collider col = GetComponent<Collider>();
+            if (col == null)
+            {
+                col = GetComponentInChildren<Collider>();
+            }
             if (col != null)
             {
                 col.isTrigger = true;
@@ -44,6 +48,11 @@ namespace AB.TurtleBeach
         private void DiscoverVariables()
         {
             var vars = GetComponent<Variables>();
+            if (vars == null)
+            {
+                vars = GetComponentInChildren<Variables>();
+            }
+
             if (vars != null)
             {
                 try
@@ -70,10 +79,15 @@ namespace AB.TurtleBeach
             {
                 particle = GetComponentInChildren<ParticleSystem>(true);
             }
+            if (particle == null && transform.parent != null)
+            {
+                particle = transform.parent.GetComponentInChildren<ParticleSystem>(true);
+            }
+
             if (eggVisual == null)
             {
-                // Egg mesh is usually named "Eggs (7)" or similar in children
-                var visualTrans = transform.Find("Eggs (7)") ?? transform.Find("Eggs");
+                // Egg mesh is usually named "Eggs (7)" or similar in children or sub-children
+                var visualTrans = transform.Find("Eggs (7)") ?? transform.Find("Eggs") ?? transform.Find("Trigger/Eggs (7)") ?? transform.Find("Trigger/Eggs");
                 if (visualTrans != null)
                 {
                     eggVisual = visualTrans.gameObject;
@@ -89,7 +103,7 @@ namespace AB.TurtleBeach
                 interactionCanvas.name = "InteractionCanvas";
                 interactionCanvas.transform.localPosition = new Vector3(0f, 0.4f, 0f);
                 interactionCanvas.transform.localRotation = Quaternion.identity;
-                interactionCanvas.transform.localScale = new Vector3(0.008f, 0.008f, 0.008f);
+                interactionCanvas.transform.localScale = new Vector3(0.005f, 0.005f, 0.005f);
 
                 // Update text to [Collect Egg]
                 var tmp = interactionCanvas.GetComponentInChildren<TextMeshProUGUI>();
