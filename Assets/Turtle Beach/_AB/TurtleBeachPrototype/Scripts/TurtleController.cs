@@ -144,6 +144,12 @@ namespace AB.TurtleBeach
 
                 if (interactionCanvas != null)
                 {
+                    var tmp = interactionCanvas.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+                    if (tmp != null)
+                    {
+                        tmp.text = "[Sit]";
+                    }
+
                     var btn = interactionCanvas.GetComponentInChildren<UnityEngine.UI.Button>();
                     if (btn != null)
                     {

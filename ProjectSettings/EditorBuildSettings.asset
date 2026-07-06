@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Metaverse/Spaces/AvatarSelection/Scenes/AvatarSelection.unity
     guid: b89ebdf1b470bdd45aad24418c48162c
   - enabled: 1
+    path: Assets/Turtle Beach/Turtle beach.unity
+    guid: ebdfb2b6661701d46a2076495da6bd9d
+  - enabled: 0
     path: Assets/Metaverse/Spaces/Hub/Scenes/Hub.unity
     guid: 92037d849f7ae7b4597e630166aacb31
   - enabled: 0
