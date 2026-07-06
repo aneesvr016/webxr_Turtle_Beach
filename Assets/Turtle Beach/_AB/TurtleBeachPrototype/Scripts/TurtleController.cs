@@ -95,6 +95,12 @@ namespace AB.TurtleBeach
             _startPosition = transform.position;
             _startRotation = transform.rotation;
 
+            if (interactable == null)
+            {
+                Transform childInteractable = transform.Find("Interactable");
+                if (childInteractable != null) interactable = childInteractable.gameObject;
+            }
+
             // Setup interaction prompt canvas inside the interactable
             if (interactable != null)
             {
