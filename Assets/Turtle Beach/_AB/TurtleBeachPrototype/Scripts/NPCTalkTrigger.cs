@@ -14,6 +14,14 @@ namespace AB.TurtleBeach
         private void Awake()
         {
             talkController = GetComponentInParent<NPCTalkController>();
+            if (talkController == null)
+            {
+                talkController = GetComponent<NPCTalkController>();
+            }
+            if (talkController == null && transform.parent != null)
+            {
+                talkController = transform.parent.GetComponentInChildren<NPCTalkController>();
+            }
             
             Collider col = GetComponent<Collider>();
             if (col != null)

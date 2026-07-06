@@ -17,6 +17,8 @@ namespace AB.TurtleBeach
         [TextArea(3, 5)]
         public string subtitleText;
         
+        private GameObject speechBubbleCanvas;
+        private TMPro.TextMeshProUGUI subtitleTextUI;
         private bool isSpeaking = false;
         private Coroutine talkCoroutine;
 
@@ -24,6 +26,20 @@ namespace AB.TurtleBeach
         {
             if (audioSource == null) audioSource = GetComponentInChildren<AudioSource>();
             if (animator == null) animator = GetComponentInChildren<Animator>();
+
+            // Find SpeechBubbleCanvas in children or sibling
+            Transform canvasT = transform.Find("SpeechBubbleCanvas");
+            if (canvasT == null && transform.parent != null)
+            {
+                canvasT = transform.parent.Find("SpeechBubbleCanvas");
+            }
+
+            if (canvasT != null)
+            {
+                speechBubbleCanvas = canvasT.gameObject;
+                subtitleTextUI = speechBubbleCanvas.GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
+                speechBubbleCanvas.SetActive(false);
+            }
         }
 
         public void PlayTalk()
@@ -47,6 +63,16 @@ namespace AB.TurtleBeach
         private IEnumerator TalkSequence()
         {
             isSpeaking = true;
+
+            // Show subtitle
+            if (speechBubbleCanvas != null && !string.IsNullOrEmpty(subtitleText))
+            {
+                if (subtitleTextUI != null)
+                {
+                    subtitleTextUI.text = subtitleText;
+                }
+                speechBubbleCanvas.SetActive(true);
+            }
 
             // Start Animation
             if (animator != null)
@@ -74,6 +100,11 @@ namespace AB.TurtleBeach
             isSpeaking = false;
             if (audioSource != null) audioSource.Stop();
             
+            if (speechBubbleCanvas != null)
+            {
+                speechBubbleCanvas.SetActive(false);
+            }
+
             if (animator != null)
             {
                 SetTalkingAnimParameter(false);
