@@ -145,9 +145,8 @@ PlayerSettings:
   tvOSBundleVersion: 1.0
   bundleVersion: 0.5
   preloadedAssets:
-  - {fileID: 11400000, guid: 22efbd6f3db5d524e9319313c0a9c29f, type: 2}
-  - {fileID: 4937891682836841225, guid: f7c99e3480555744e9a379ea516af73e, type: 2}
-  - {fileID: -6405127292172552433, guid: 556f3dfeff662654c848f4e4f84449fc, type: 2}
+  - {fileID: 8444152916168972473, guid: f7c99e3480555744e9a379ea516af73e, type: 2}
+  - {fileID: -7108808847218023984, guid: 556f3dfeff662654c848f4e4f84449fc, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -492,7 +491,7 @@ PlayerSettings:
   m_BuildTargetBatching:
   - m_BuildTarget: Standalone
     m_StaticBatching: 1
-    m_DynamicBatching: 1
+    m_DynamicBatching: 0
   - m_BuildTarget: tvOS
     m_StaticBatching: 1
     m_DynamicBatching: 0
@@ -1001,11 +1000,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: 91b95d82-38af-4ebd-94c6-d26d0a378ffe
+  cloudProjectId: fc453d9c-bc23-4333-a6cf-b512b6539a67
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: Fusion2Metaverse
-  organizationId: 6july
+  organizationId: 11july
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
