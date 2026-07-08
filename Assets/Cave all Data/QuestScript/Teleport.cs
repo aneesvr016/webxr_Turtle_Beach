@@ -40,6 +40,22 @@ public class Teleport : MonoBehaviour
                 btn.onClick.RemoveAllListeners();
                 btn.onClick.AddListener(Interact);
             }
+
+            // Apply white background styling if found existing
+            Transform bgT = interactionCanvas.transform.Find("Background");
+            if (bgT != null)
+            {
+                var bgImg = bgT.GetComponent<UnityEngine.UI.Image>();
+                if (bgImg != null)
+                {
+                    bgImg.color = Color.white;
+                }
+            }
+            var tmp = interactionCanvas.GetComponentInChildren<TextMeshProUGUI>();
+            if (tmp != null)
+            {
+                tmp.color = new Color(0.12f, 0.12f, 0.12f, 1f);
+            }
         }
         else
         {
@@ -53,13 +69,26 @@ public class Teleport : MonoBehaviour
                 // Position it float above the teleport platform
                 interactionCanvas.transform.localPosition = new Vector3(0f, 0.7f, 0f);
                 interactionCanvas.transform.localRotation = Quaternion.identity;
-                interactionCanvas.transform.localScale = new Vector3(0.007f, 0.007f, 0.007f);
+                // Scale down the canvas to a clean 0.0018f for pristine small button sizing
+                interactionCanvas.transform.localScale = new Vector3(0.0018f, 0.0018f, 0.0018f);
                 
-                // Update text to "Warp" or "Teleport"
+                // Update text to "Warp" or "Teleport" and set to charcoal color
                 var tmp = interactionCanvas.GetComponentInChildren<TextMeshProUGUI>();
                 if (tmp != null)
                 {
                     tmp.text = "Teleport";
+                    tmp.color = new Color(0.12f, 0.12f, 0.12f, 1f);
+                }
+
+                // Make background solid white
+                Transform bgT = interactionCanvas.transform.Find("Background");
+                if (bgT != null)
+                {
+                    var bgImg = bgT.GetComponent<UnityEngine.UI.Image>();
+                    if (bgImg != null)
+                    {
+                        bgImg.color = Color.white;
+                    }
                 }
 
                 interactionCanvas.SetActive(false);
