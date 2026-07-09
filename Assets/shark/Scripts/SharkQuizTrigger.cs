@@ -39,12 +39,35 @@ public class SharkQuizTrigger : MonoBehaviour
         // Position it slightly above the trigger area at player height
         canvasObj.transform.localPosition = new Vector3(0f, 2.0f, 0f);
         canvasObj.transform.localRotation = Quaternion.identity;
-        canvasObj.transform.localScale = new Vector3(0.0018f, 0.0018f, 0.0018f);
+        canvasObj.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
 
         Canvas canvas = canvasObj.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
+        RectTransform canvasRt = canvasObj.GetComponent<RectTransform>();
+        if (canvasRt != null)
+        {
+            canvasRt.sizeDelta = new Vector2(97f, 37f);
+        }
         canvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
         canvasObj.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+
+        // Load high rounded background sprite
+        Sprite bgSprite = null;
+#if UNITY_EDITOR
+        bgSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/New Exported/Scene/WhiteBackground_HighRounded_1024x256px.png");
+#endif
+        if (bgSprite == null)
+        {
+            Sprite[] sprites = Resources.FindObjectsOfTypeAll<Sprite>();
+            foreach (var s in sprites)
+            {
+                if (s.name == "WhiteBackground_HighRounded_1024x256px")
+                {
+                    bgSprite = s;
+                    break;
+                }
+            }
+        }
 
         // Background Panel
         GameObject bgObj = new GameObject("Background");
@@ -52,10 +75,12 @@ public class SharkQuizTrigger : MonoBehaviour
         RectTransform bgRect = bgObj.AddComponent<RectTransform>();
         bgRect.anchorMin = Vector2.zero;
         bgRect.anchorMax = Vector2.one;
-        bgRect.sizeDelta = new Vector2(120f, 35f);
+        bgRect.sizeDelta = Vector2.zero;
 
         UnityEngine.UI.Image bgImg = bgObj.AddComponent<UnityEngine.UI.Image>();
-        bgImg.color = backgroundColor;
+        bgImg.sprite = bgSprite;
+        bgImg.type = UnityEngine.UI.Image.Type.Sliced;
+        bgImg.color = new Color(0f, 0f, 0f, 1f); // Solid Black
 
         // Option Text Label
         GameObject textObj = new GameObject("Label");
@@ -66,10 +91,10 @@ public class SharkQuizTrigger : MonoBehaviour
         textRect.sizeDelta = Vector2.zero;
 
         TextMeshProUGUI text = textObj.AddComponent<TextMeshProUGUI>();
-        text.text = $"E / Click to Select\nOption {optionLabel}";
-        text.fontSize = 9f;
+        text.text = $"Option {optionLabel}";
+        text.fontSize = 11.0f;
         text.alignment = TextAlignmentOptions.Center;
-        text.color = textColor;
+        text.color = Color.white;
 
         // Button component for WebXR VR controller clicks
         UnityEngine.UI.Button btn = bgObj.AddComponent<UnityEngine.UI.Button>();

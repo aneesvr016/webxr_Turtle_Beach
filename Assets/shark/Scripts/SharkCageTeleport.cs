@@ -38,13 +38,36 @@ public class SharkCageTeleport : MonoBehaviour
         // Position it floating nicely above the platform
         canvasObj.transform.localPosition = new Vector3(0f, 1.2f, 0f);
         canvasObj.transform.localRotation = Quaternion.identity;
-        // Make the canvas small (0.0018 scale) just like the clean speech bubbles
-        canvasObj.transform.localScale = new Vector3(0.0018f, 0.0018f, 0.0018f);
+        // Make the canvas scale 0.01f matching Gracie Golem perfect styling
+        canvasObj.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
 
         Canvas canvas = canvasObj.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
+        RectTransform canvasRt = canvasObj.GetComponent<RectTransform>();
+        if (canvasRt != null)
+        {
+            canvasRt.sizeDelta = new Vector2(97f, 37f);
+        }
         canvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
         canvasObj.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+
+        // Load high rounded background sprite
+        Sprite bgSprite = null;
+#if UNITY_EDITOR
+        bgSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/New Exported/Scene/WhiteBackground_HighRounded_1024x256px.png");
+#endif
+        if (bgSprite == null)
+        {
+            Sprite[] sprites = Resources.FindObjectsOfTypeAll<Sprite>();
+            foreach (var s in sprites)
+            {
+                if (s.name == "WhiteBackground_HighRounded_1024x256px")
+                {
+                    bgSprite = s;
+                    break;
+                }
+            }
+        }
 
         // Background Panel
         GameObject bgObj = new GameObject("Background");
@@ -52,13 +75,12 @@ public class SharkCageTeleport : MonoBehaviour
         RectTransform bgRect = bgObj.AddComponent<RectTransform>();
         bgRect.anchorMin = Vector2.zero;
         bgRect.anchorMax = Vector2.one;
-        bgRect.sizeDelta = new Vector2(140f, 45f);
+        bgRect.sizeDelta = Vector2.zero;
 
         UnityEngine.UI.Image bgImg = bgObj.AddComponent<UnityEngine.UI.Image>();
-        
-        // Downward teleport canvas has a clean solid white background. Upward has the dark glass look.
-        Color bgCol = isGoingDown ? Color.white : backgroundColor;
-        bgImg.color = bgCol;
+        bgImg.sprite = bgSprite;
+        bgImg.type = UnityEngine.UI.Image.Type.Sliced;
+        bgImg.color = new Color(0f, 0f, 0f, 1f); // Solid Black
 
         // Button/Text
         GameObject textObj = new GameObject("Label");
@@ -69,12 +91,10 @@ public class SharkCageTeleport : MonoBehaviour
         textRect.sizeDelta = Vector2.zero;
 
         TextMeshProUGUI text = textObj.AddComponent<TextMeshProUGUI>();
-        text.text = isGoingDown ? "E / Click to Enter\nResearch Cage" : "E / Click to Return\nto Boat Deck";
-        text.fontSize = 9.0f;
+        text.text = isGoingDown ? "Enter Cage" : "Return to Deck";
+        text.fontSize = 11.0f;
         text.alignment = TextAlignmentOptions.Center;
-        
-        // Text is dark charcoal on white background, white on dark glass
-        text.color = isGoingDown ? new Color(0.12f, 0.12f, 0.12f, 1f) : textColor;
+        text.color = Color.white;
 
         // Add Button for WebXR controller pointer support
         UnityEngine.UI.Button btn = bgObj.AddComponent<UnityEngine.UI.Button>();

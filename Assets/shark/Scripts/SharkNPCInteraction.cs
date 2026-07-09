@@ -94,12 +94,35 @@ public class SharkNPCInteraction : MonoBehaviour
         canvasObj.transform.SetParent(transform);
         canvasObj.transform.localPosition = new Vector3(0f, 1.8f, 0.8f);
         canvasObj.transform.localRotation = Quaternion.identity;
-        canvasObj.transform.localScale = new Vector3(0.0018f, 0.0018f, 0.0018f);
+        canvasObj.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
 
         Canvas canvas = canvasObj.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
+        RectTransform canvasRt = canvasObj.GetComponent<RectTransform>();
+        if (canvasRt != null)
+        {
+            canvasRt.sizeDelta = new Vector2(97f, 37f);
+        }
         canvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
         canvasObj.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+
+        // Load high rounded background sprite
+        Sprite bgSprite = null;
+#if UNITY_EDITOR
+        bgSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/New Exported/Scene/WhiteBackground_HighRounded_1024x256px.png");
+#endif
+        if (bgSprite == null)
+        {
+            Sprite[] sprites = Resources.FindObjectsOfTypeAll<Sprite>();
+            foreach (var s in sprites)
+            {
+                if (s.name == "WhiteBackground_HighRounded_1024x256px")
+                {
+                    bgSprite = s;
+                    break;
+                }
+            }
+        }
 
         // Background Panel
         GameObject bgObj = new GameObject("Background");
@@ -107,10 +130,12 @@ public class SharkNPCInteraction : MonoBehaviour
         RectTransform bgRect = bgObj.AddComponent<RectTransform>();
         bgRect.anchorMin = Vector2.zero;
         bgRect.anchorMax = Vector2.one;
-        bgRect.sizeDelta = new Vector2(140f, 40f);
+        bgRect.sizeDelta = Vector2.zero;
 
         UnityEngine.UI.Image bgImg = bgObj.AddComponent<UnityEngine.UI.Image>();
-        bgImg.color = backgroundColor;
+        bgImg.sprite = bgSprite;
+        bgImg.type = UnityEngine.UI.Image.Type.Sliced;
+        bgImg.color = new Color(0f, 0f, 0f, 1f); // Solid Black
 
         // Button/Text
         GameObject textObj = new GameObject("Label");
@@ -121,10 +146,10 @@ public class SharkNPCInteraction : MonoBehaviour
         textRect.sizeDelta = Vector2.zero;
 
         TextMeshProUGUI text = textObj.AddComponent<TextMeshProUGUI>();
-        text.text = $"E / Click to Talk to\n{npcName}";
-        text.fontSize = 10f;
+        text.text = "Talk";
+        text.fontSize = 11f;
         text.alignment = TextAlignmentOptions.Center;
-        text.color = textColor;
+        text.color = Color.white;
 
         // Add a world space button component to handle WebXR controller clicks
         UnityEngine.UI.Button btn = bgObj.AddComponent<UnityEngine.UI.Button>();
@@ -145,17 +170,44 @@ public class SharkNPCInteraction : MonoBehaviour
 
         Canvas canvas = canvasObj.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
+        RectTransform canvasRt = canvasObj.GetComponent<RectTransform>();
+        if (canvasRt != null)
+        {
+            canvasRt.sizeDelta = new Vector2(220f, 130f);
+        }
         canvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
         canvasObj.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+
+        // Load high rounded background sprite
+        Sprite bgSprite = null;
+#if UNITY_EDITOR
+        bgSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/New Exported/Scene/WhiteBackground_HighRounded_1024x256px.png");
+#endif
+        if (bgSprite == null)
+        {
+            Sprite[] sprites = Resources.FindObjectsOfTypeAll<Sprite>();
+            foreach (var s in sprites)
+            {
+                if (s.name == "WhiteBackground_HighRounded_1024x256px")
+                {
+                    bgSprite = s;
+                    break;
+                }
+            }
+        }
 
         // Background Panel
         GameObject bgObj = new GameObject("Background");
         bgObj.transform.SetParent(canvasObj.transform, false);
         RectTransform bgRect = bgObj.AddComponent<RectTransform>();
-        bgRect.sizeDelta = new Vector2(220f, 130f);
+        bgRect.anchorMin = Vector2.zero;
+        bgRect.anchorMax = Vector2.one;
+        bgRect.sizeDelta = Vector2.zero;
 
         UnityEngine.UI.Image bgImg = bgObj.AddComponent<UnityEngine.UI.Image>();
-        bgImg.color = backgroundColor;
+        bgImg.sprite = bgSprite;
+        bgImg.type = UnityEngine.UI.Image.Type.Sliced;
+        bgImg.color = new Color(0f, 0f, 0f, 1f); // Solid Black
 
         // Title Text
         GameObject titleObj = new GameObject("Title");

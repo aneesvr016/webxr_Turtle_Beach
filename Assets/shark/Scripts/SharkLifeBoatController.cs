@@ -70,6 +70,24 @@ public class SharkLifeBoatController : MonoBehaviour
 
     private void CreateCanvases()
     {
+        // Load high rounded background sprite
+        Sprite bgSprite = null;
+#if UNITY_EDITOR
+        bgSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/New Exported/Scene/WhiteBackground_HighRounded_1024x256px.png");
+#endif
+        if (bgSprite == null)
+        {
+            Sprite[] sprites = Resources.FindObjectsOfTypeAll<Sprite>();
+            foreach (var s in sprites)
+            {
+                if (s.name == "WhiteBackground_HighRounded_1024x256px")
+                {
+                    bgSprite = s;
+                    break;
+                }
+            }
+        }
+
         // 1. Create DRIVE Canvas on DriveInteractable
         if (driveInteractable != null)
         {
@@ -92,7 +110,9 @@ public class SharkLifeBoatController : MonoBehaviour
             bgRect.sizeDelta = new Vector2(130f, 40f);
 
             UnityEngine.UI.Image bgImg = bgObj.AddComponent<UnityEngine.UI.Image>();
-            bgImg.color = backgroundColor;
+            bgImg.sprite = bgSprite;
+            bgImg.type = UnityEngine.UI.Image.Type.Sliced;
+            bgImg.color = new Color(0f, 0f, 0f, 1f); // Solid Black
 
             GameObject textObj = new GameObject("Label");
             textObj.transform.SetParent(bgObj.transform, false);
@@ -148,7 +168,9 @@ public class SharkLifeBoatController : MonoBehaviour
             bgRect.sizeDelta = new Vector2(130f, 40f);
 
             UnityEngine.UI.Image bgImg = bgObj.AddComponent<UnityEngine.UI.Image>();
-            bgImg.color = backgroundColor;
+            bgImg.sprite = bgSprite;
+            bgImg.type = UnityEngine.UI.Image.Type.Sliced;
+            bgImg.color = new Color(0f, 0f, 0f, 1f); // Solid Black
 
             GameObject textObj = new GameObject("Label");
             textObj.transform.SetParent(bgObj.transform, false);

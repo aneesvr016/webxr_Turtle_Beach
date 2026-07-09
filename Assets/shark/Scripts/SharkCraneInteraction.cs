@@ -53,7 +53,7 @@ public class SharkCraneInteraction : MonoBehaviour
         canvasObj.transform.position = transform.position + new Vector3(0f, 1.4f, 0f);
         canvasObj.transform.localRotation = Quaternion.identity;
         // Small scale (0.0018) matching other WebXR buttons perfectly
-        canvasObj.transform.localScale = new Vector3(0.0018f, 0.0018f, 0.0018f);
+        canvasObj.transform.localScale = new Vector3(0.0015f, 0.0015f, 0.0015f);
 
         Canvas canvas = canvasObj.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
