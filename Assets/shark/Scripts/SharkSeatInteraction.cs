@@ -25,18 +25,25 @@ public class SharkSeatInteraction : MonoBehaviour
     private UnityEngine.AI.NavMeshAgent navAgent;
     private bool originalAgentState = false;
 
-    private Vector3 originalRigPosition;
-    private Quaternion originalRigRotation;
-
     private void Awake()
     {
         // Add a trigger collider dynamically if one doesn't exist
-        // This avoids modifying the chair's solid collider, allowing the player to walk up to it
-        BoxCollider triggerCol = gameObject.AddComponent<BoxCollider>();
+        BoxCollider triggerCol = GetComponent<BoxCollider>();
+        if (triggerCol == null)
+        {
+            triggerCol = gameObject.AddComponent<BoxCollider>();
+        }
         triggerCol.isTrigger = true;
-        // Set trigger size to a nice interactive zone around the chair
-        triggerCol.size = new Vector3(1.2f, 1.2f, 1.2f);
-        triggerCol.center = new Vector3(0f, 0.3f, 0f);
+
+        // Ensure we scale the collider size so that in world space it is exactly 1.2 meters.
+        // We use lossyScale to get the absolute, inherited world scale.
+        Vector3 worldScale = transform.lossyScale;
+        if (worldScale.x == 0) worldScale.x = 1f;
+        if (worldScale.y == 0) worldScale.y = 1f;
+        if (worldScale.z == 0) worldScale.z = 1f;
+
+        triggerCol.size = new Vector3(1.2f / worldScale.x, 1.2f / worldScale.y, 1.2f / worldScale.z);
+        triggerCol.center = new Vector3(0f, 0.3f / worldScale.y, 0f);
 
         // Create the interaction canvas programmatically
         CreateInteractionCanvas();
@@ -47,11 +54,16 @@ public class SharkSeatInteraction : MonoBehaviour
         GameObject canvasObj = new GameObject("SeatInteractionCanvas");
         canvasObj.transform.SetParent(transform);
         
-        // Position it nicely above the chair seat
-        canvasObj.transform.localPosition = new Vector3(0f, 0.65f, 0f);
+        Vector3 worldScale = transform.lossyScale;
+        if (worldScale.x == 0) worldScale.x = 1f;
+        if (worldScale.y == 0) worldScale.y = 1f;
+        if (worldScale.z == 0) worldScale.z = 1f;
+
+        // Position it nicely above the chair seat in world space (0.65f world height above the chair position)
+        canvasObj.transform.localPosition = new Vector3(0f, 0.65f / worldScale.y, 0f);
         canvasObj.transform.localRotation = Quaternion.identity;
-        // Make scale small to match the beautiful WebXR style
-        canvasObj.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+        // Match world scale to 0.0018f (like other WebXR buttons in the project)
+        canvasObj.transform.localScale = new Vector3(0.0018f / worldScale.x, 0.0018f / worldScale.y, 0.0018f / worldScale.z);
 
         Canvas canvas = canvasObj.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
@@ -276,7 +288,12 @@ public class SharkSeatInteraction : MonoBehaviour
 
         if (interactionCanvas != null)
         {
-            interactionCanvas.transform.localPosition = new Vector3(0f, 0.65f, 0f);
+            Vector3 worldScale = transform.lossyScale;
+            if (worldScale.x == 0) worldScale.x = 1f;
+            if (worldScale.y == 0) worldScale.y = 1f;
+            if (worldScale.z == 0) worldScale.z = 1f;
+
+            interactionCanvas.transform.localPosition = new Vector3(0f, 0.65f / worldScale.y, 0f);
             if (!playerInside)
             {
                 interactionCanvas.SetActive(false);
